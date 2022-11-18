@@ -1,0 +1,97 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<h1>Create</h1>
+
+<h4>Estudiante</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form name="Create">
+            <div class="form-group">
+                <label for="Rut" class="control-label"></label>
+                <input v-model="rut" name="Rut" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Nombre" class="control-label"></label>
+                <input v-model="nombre" name="Nombre" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Apellido" class="control-label"></label>
+                <input v-model="apellido" name="Apellido" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="FechaNacimiento" class="control-label"></label>
+                <input v-model="fechanacimiento" name="FechaNacimiento" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Domicilio" class="control-label"></label>
+                <input v-model="domicilio" name="Domicilio" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input v-on:click="agregarEstudiante()" type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+<script>
+    const { createApp } = Vue
+    const url = "https://localhost:7073/api/Estudiante"
+
+    createApp({
+        data() {
+            return {
+                message: 'Esta es una página con VueJS incrustado',
+                rut: '',
+                nombre: '',
+                apellido: '',
+                fechanacimiento: '',
+                domicilio: '',
+                estudiantes: []
+            }
+        },
+        methods: {
+            obtenerEstudiantes() {
+                axios.get(url).then(response => {
+                    console.log(response);
+                    this.estudiantes = response.data;
+                }).catch(error => console.log(error))
+            },
+            agregarEstudiante() {
+                const estudiante = {
+                    rut: this.rut,
+                    nombre: this.nombre,
+                    apellido:this.apellido,
+                    fechanacimiento: this.fechanacimiento,
+                    domicilio:this.domicilio
+                }
+                axios.post(url, estudiante).then( response => {
+                    console.log(response);
+                }).catch( error => {
+                    console.log(error)
+                })
+                this.message = "Usuario Agregado exitosamente!";
+                this.rut = "";
+                this.nombre = "";
+                this.apellido = "";
+                this.fechanacimiento = "";
+                this.domicilio = "";
+            }
+        },
+        created: function () {
+            this.obtenerEstudiantes();
+        }
+    }).mount('#app')
+</script>

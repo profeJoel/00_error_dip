@@ -1,0 +1,32 @@
+﻿@model ejemploColegio.Models.Estudiante
+
+<h1>Seleccionar</h1>
+
+<h4>Ingrese un filtro de edad del Estudiante</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="MostrarEstudiantesFiltrados">
+            <div class="form-group">
+                <label class="control-label" for="tipo"></label>
+                <select name="tipo" id="tipo">
+                    <option value=">">Mayor que</option>
+                    <option value=">=">Mayor Igual que</option>
+                    <option value="<">Menor que</option>
+                    <option value="<=">Menor Igual que</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Numero" class="control-label"></label>
+                <input name="Numero" type="Number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Filtrar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
