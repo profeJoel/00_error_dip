@@ -1,0 +1,97 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div id="app">
+    <h1>Buscar</h1>
+
+    <h4>Ingresar un nombre para buscar</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" v-model="keyword" class="form-control form-control-lg" placeholder="Ingrese la cadena de búsqueda">
+                <button v-on:click="buscarEstudiantes()" class="btn btn-success btn-lg" type="button">Buscar</button>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <h5 v-if="estudiantes.length == 0"> No hay estudiantes que cumplan con esta búsqueda...</h5>
+    <table v-if="estudiantes.length > 0" class="table">
+        <thead>
+            <tr>
+                <th>
+                    Rut
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Apellido
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="estudiante in estudiantes">
+                <td>
+                    {{estudiante.id}}
+                </td>
+                <td>
+                    {{estudiante.nombre}}
+                </td>
+                <td>
+                    {{estudiante.apellido}}
+                </td>
+
+                <td>
+                    <div class="btn-group">
+                        <a v-bind:href="'/Estudiantes/VueEdit/'+ estudiante.id " class="btn btn-primary active" aria-current="page">Editar</a>
+                        <a v-bind:href="'/Estudiantes/VueDetails/'+ estudiante.id " class="btn btn-primary">Detalles</a>
+                        <a v-bind:href="'/Estudiantes/VueDelete/'+ estudiante.id " class="btn btn-primary">Eliminar</a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+<script>
+    const { createApp } = Vue
+    const url = "https://localhost:7073/api/EstudiantesAPI"
+
+    createApp({
+        data() {
+            return {
+                message: 'Esta es una página con VueJS incrustado',
+                keyword: "",
+                estudiantes: []
+            }
+        },
+        methods: {
+            obtenerEstudiantes() {
+                axios.get(url).then(response => {
+                    console.log(response);
+                    this.estudiantes = response.data;
+                }).catch(error => console.log(error))
+            },
+            buscarEstudiantes() {
+                console.log(">>>" + this.keyword)
+                axios.post(url + "/" + this.keyword).then(response => {
+                    console.log(response);
+                    this.estudiantes = response.data;
+                }).catch(error => console.log(error))
+            }
+        },
+        created: function () {
+            this.obtenerEstudiantes();
+        }
+    }).mount('#app')
+</script>
