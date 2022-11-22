@@ -11,5 +11,7 @@ namespace ejemploColegio.Data
         {
         }
         public DbSet<ejemploColegio.Models.Estudiante> Estudiante { get; set; }
+
+        public DbSet<ejemploColegio.Models.Anotacion> Anotacions { get; set; }
     }
 }
