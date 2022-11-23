@@ -1,0 +1,109 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div id="app">
+
+    <h1>VueCreate</h1>
+
+    <h4>Anotación</h4>
+    <hr />
+    <div class="row">
+        <p v-if="estudiantes.length == 0">Aun no puede crear Anotación</p>
+        <div v-if="estudiantes.length > 0" class="col-md-4">
+            <form name="VueCreate">
+                <div class="form-group">
+                    <label for="Tipo" class="control-label">Tipo</label>
+                    <select v-model="anotacion.tipo" class="form-control">
+                        <option disabled value="">Selecciona un tipo de anotación</option>
+                        <option value="positiva">Positiva</option>
+                        <option value="negativa">Negativa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="FechaEmision" class="control-label">Fecha de Emisión</label>
+                    <input v-model="anotacion.fechaEmision" class="form-control" type="datetime-local" />
+                    
+                </div>
+                <div class="form-group">
+                    <label for="Descripcion" class="control-label">Descripción</label>
+                    <textarea v-model="anotacion.descripcion" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="EstudianteId" class="control-label">Estudiante</label>
+                    <label v-if="estudiante != null" class="control-label">{{estudiante.nombre}} {{estudiante.apellido}}</label>
+                    <select v-model="anotacion.estudianteId" class ="form-control">
+                        <option disabled value="">Selecciona un estudiante</option>
+                        <option v-for="e in estudiantes" :value="e.id">{{e.nombre}} {{e.apellido}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button v-on:click="agregarAnotacion()" class="btn btn-success btn-lg" type="button">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <br />
+    <div class="btn-group">
+        <a asp-action="VueIndex" class="btn btn-primary active" aria-current="page">Volver a la Lista</a>
+    </div>
+
+</div>
+
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+<script>
+    const { createApp } = Vue
+    const url_anotaciones = "https://localhost:7073/api/AnotacionsAPI"
+    const url_estudiantes = "https://localhost:7073/api/EstudiantesAPI"
+
+    createApp({
+        data() {
+            return {
+                message: 'Esta es una página con VueJS incrustado',
+                anotaciones: [],
+                estudiantes: [],
+                anotacion: {
+                    id:0,
+                    tipo:'',
+                    fechaEmision: new Date().toISOString().substr(0, 16),
+                    descripcion:'',
+                    estudianteId:'',
+                    estudiante: null
+                },
+                estudiante: null
+            }
+        },
+        methods: {
+            obtenerAnotaciones() {
+                axios.get(url_anotaciones).then(response => {
+                    console.log(response);
+                    this.anotaciones = response.data;
+                }).catch(error => console.log(error))
+            },
+            obtenerEstudiantes() {
+                axios.get(url_estudiantes).then(response => {
+                    console.log(response);
+                    this.estudiantes = response.data;
+                }).catch(error => console.log(error))
+            },
+            agregarAnotacion() {
+                this.anotacion.estudiante = this.estudiantes.find(e => e.id == this.anotacion.estudianteId);
+                console.log(this.anotacion)
+                console.log(this.anotacion.estudiante)
+                axios.post(url_anotaciones, this.anotacion).then( response => {
+                    console.log(response);
+                    window.location.href = "/Anotacions/VueIndex/";
+                }).catch( error => console.log(error));
+            }
+        },
+        created: function () {
+            this.obtenerEstudiantes();
+        }
+    }).mount('#app')
+</script>
+
